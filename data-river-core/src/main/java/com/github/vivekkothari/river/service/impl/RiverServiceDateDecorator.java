@@ -7,10 +7,7 @@ import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author vivek.kothari on 20/06/16.
@@ -22,7 +19,7 @@ public class RiverServiceDateDecorator
     private final IRiverService delegate;
     private final Set<String> dateFields;
 
-    public RiverServiceDateDecorator(final IRiverService delegate, final String... dateFields) {
+    public RiverServiceDateDecorator(final IRiverService delegate, final Set<String> dateFields) {
         this.delegate = delegate;
         this.dateFields = Sets.newHashSet(dateFields);
     }
