@@ -52,18 +52,4 @@ public interface IEnricher {
                                           .get("id"));
     }
 
-    /**
-     * Returns the {@code indexName} in which this record needs to be put.
-     *
-     * @param messageValue
-     *         incoming messageValue
-     *
-     * @return by default returns the index in format db_name-table_name-yyyy-MM-dd format.
-     */
-    default String indexName(final MessageValue messageValue) {
-        return String.join("-", messageValue.getDatabase(), messageValue.getTable(), df.get()
-                                                                                       .format(getRecordCreationDate(messageValue)))
-                     .toLowerCase();
-    }
-
 }

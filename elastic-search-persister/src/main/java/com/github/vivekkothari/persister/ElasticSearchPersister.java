@@ -28,9 +28,8 @@ public class ElasticSearchPersister
     @Override
     public void persist(final MessageValue messageValue, final String riverType) {
         final IEnricher enricher = TransformerFactory.INSTANCE.enricher(riverType);
-        final Date recordCreationDate = enricher.getRecordCreationDate(messageValue);
         final String id = enricher.recordId(messageValue);
-        final String indexName = enricher.indexName(messageValue);
+        final String indexName = indexName(messageValue, enricher.getRecordCreationDate(messageValue));
         final String type = messageValue.getTable()
                                         .toLowerCase();
         switch (messageValue.getType()) {

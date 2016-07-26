@@ -6,9 +6,10 @@
 
     <groupId>com.github.vivekkothari</groupId>
     <artifactId>data-river</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <name>data-river</name>
+    <version>1.1</version>
     <packaging>pom</packaging>
-    <description>A dropwizard extension which helps.</description>
+    <description>A dropwizard extension which helps to build pipelines to replicate mysql data to desired datastores.</description>
     <url>https://github.com/vivekkothari/data-river</url>
 
     <scm>
