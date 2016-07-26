@@ -26,6 +26,10 @@ public class TransformerFactory {
         this.filters = filters;
         this.backFillers = backFillers;
         Preconditions.checkState(enrichers.size() == filters.size() && filters.size() == backFillers.size(), "There should be same number enrichers, filters and backFillers");
+        for (final Map.Entry<String, IEnricher> entry : enrichers.entrySet()) {
+            Preconditions.checkState(filters.containsKey(entry.getKey()));
+            Preconditions.checkState(backFillers.containsKey(entry.getKey()));
+        }
     }
 
     @Builder
