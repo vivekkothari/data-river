@@ -12,7 +12,7 @@ import java.util.Date;
  */
 public interface IEnricher {
 
-    ThreadLocal<DateFormat> dtf = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"));
+    ThreadLocal<DateFormat> dtf = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
     ThreadLocal<DateFormat> df = ThreadLocal.withInitial(() -> new SimpleDateFormat("yyyy-MM-dd"));
 
     /**

@@ -8,10 +8,8 @@ import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 
-import java.util.Date;
+import java.util.Map;
 import java.util.function.Supplier;
-
-import static com.github.vivekkothari.river.service.IEnricher.df;
 
 /**
  * @author vivek.kothari on 26/07/16.
@@ -20,16 +18,19 @@ public class ElasticSearchPersister
         implements IPersister {
 
     private final Supplier<BulkProcessor> bulkProcessor;
+    private final Map<String, IndexNameGenerator> indexNameGenerators;
 
-    public ElasticSearchPersister(final Supplier<BulkProcessor> bulkProcessor) {
+    public ElasticSearchPersister(final Supplier<BulkProcessor> bulkProcessor, final Map<String, IndexNameGenerator> indexNameGenerators) {
         this.bulkProcessor = bulkProcessor;
+        this.indexNameGenerators = indexNameGenerators;
     }
 
     @Override
     public void persist(final MessageValue messageValue, final String riverType) {
         final IEnricher enricher = TransformerFactory.INSTANCE.enricher(riverType);
         final String id = enricher.recordId(messageValue);
-        final String indexName = indexName(messageValue, enricher.getRecordCreationDate(messageValue));
+        final String indexName = indexNameGenerators.get(riverType)
+                                                    .indexName(messageValue, enricher.getRecordCreationDate(messageValue));
         final String type = messageValue.getTable()
                                         .toLowerCase();
         switch (messageValue.getType()) {
@@ -48,9 +49,4 @@ public class ElasticSearchPersister
         }
     }
 
-    String indexName(final MessageValue messageValue, final Date recordCreationDate) {
-        return String.join("-", messageValue.getDatabase(), messageValue.getTable(), df.get()
-                                                                                       .format(recordCreationDate))
-                     .toLowerCase();
-    }
 }
