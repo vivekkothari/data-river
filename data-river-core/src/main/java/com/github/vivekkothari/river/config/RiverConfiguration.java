@@ -14,6 +14,7 @@ import com.github.vivekkothari.river.task.BackfillTask;
 import com.google.common.base.Preconditions;
 import io.dropwizard.setup.Environment;
 import io.dropwizard.validation.ValidationMethod;
+import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.Valid;
@@ -24,6 +25,7 @@ import static com.github.vivekkothari.river.service.IEnricher.dtf;
 /**
  * @author vivek.kothari on 25/07/16.
  */
+@Data
 public abstract class RiverConfiguration {
 
     @Valid
