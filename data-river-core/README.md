@@ -1,5 +1,4 @@
-# data-river [![Build Status](https://travis-ci.org/vivekkothari/data-river.svg?branch=master)](https://travis-ci.org/vivekkothari/data-river) [![Coverage Status](https://coveralls.io/repos/github/vivekkothari/dropwizard-trim/badge.svg?branch=master)](https://coveralls.io/github/vivekkothari/data-river?branch=master)
-
+# data-river
 Replicates data from mysql to any datastore of your choice (relies on maxwell)
 
 ### Maven Dependency
@@ -7,7 +6,7 @@ Replicates data from mysql to any datastore of your choice (relies on maxwell)
 ```
 <dependency>
     <groupId>com.github.vivekkothari</groupId>
-    <artifactId>elastic-search-persister</artifactId>
+    <artifactId>data-river-core</artifactId>
     <version>1.2</version>
 </dependency>
 ```
@@ -30,12 +29,3 @@ Example
 ```
 http://localhost:8080/admin/backfill?startDate=2016-01-01T00:00:00&endDate=2016-01-10T00:00:00&riverType=river1
 ```
-
-Add following code in the `run` method of you dropwizard application.
-Add `com.github.vivekkothari.persister.ESRiverConfiguration` in your `Configuration` class
-Configure appropriately (like Elasticsearch hosts, bulk index configs etc.) then call following method.
-```
-configuration.getEsRiverConfiguration().build(environment);
-```
-
-The `IPersister` can be extended and you can add a new data store to which the messages can be stored.
