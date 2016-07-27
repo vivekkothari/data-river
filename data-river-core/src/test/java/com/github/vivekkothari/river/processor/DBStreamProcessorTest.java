@@ -52,6 +52,7 @@ public class DBStreamProcessorTest {
         dbStreamProcessor.process(key, value, "maxwell", 0, 0L);
         verify(riverService, times(1)).process(value, "river1");
 
+        TransformerFactory.INSTANCE = null;
     }
 
 }

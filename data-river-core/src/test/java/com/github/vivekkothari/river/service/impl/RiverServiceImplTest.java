@@ -2,6 +2,7 @@ package com.github.vivekkothari.river.service.impl;
 
 import com.github.vivekkothari.river.bean.MessageValue;
 import com.github.vivekkothari.river.service.*;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,12 +31,17 @@ public class RiverServiceImplTest {
     private IEnricher enricher;
 
     @Before
-    public void beforeClass() {
+    public void before() {
         TransformerFactory.builder()
                           .filter("river1", filter)
                           .enricher("river1", enricher)
                           .backFiller("river1", Mockito.mock(IBackFiller.class))
                           .build();
+    }
+
+    @After
+    public void after() {
+        TransformerFactory.INSTANCE = null;
     }
 
     @Test

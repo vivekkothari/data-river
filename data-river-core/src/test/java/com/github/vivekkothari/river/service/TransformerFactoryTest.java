@@ -2,8 +2,9 @@ package com.github.vivekkothari.river.service;
 
 import com.github.vivekkothari.river.service.impl.NoopEnricher;
 import com.github.vivekkothari.river.service.impl.PassAllFilter;
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -14,8 +15,8 @@ import java.util.List;
  */
 public class TransformerFactoryTest {
 
-    @BeforeClass
-    public static void beforeClass() {
+    @Before
+    public void before() {
         TransformerFactory.builder()
                           .filter("river1", new PassAllFilter())
                           .enricher("river1", new NoopEnricher())
@@ -24,6 +25,11 @@ public class TransformerFactoryTest {
                           .enricher("river2", new NoopEnricher())
                           .backFiller("river2", Mockito.mock(IBackFiller.class))
                           .build();
+    }
+
+    @After
+    public void after() {
+        TransformerFactory.INSTANCE = null;
     }
 
     @Test
