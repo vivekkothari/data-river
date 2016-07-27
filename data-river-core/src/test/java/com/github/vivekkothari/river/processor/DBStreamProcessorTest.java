@@ -55,4 +55,24 @@ public class DBStreamProcessorTest {
         TransformerFactory.INSTANCE = null;
     }
 
+    @Test
+    public void process_error() throws Exception {
+        dbStreamProcessor = new DBStreamProcessor(riverService);
+        MessageKey key = new MessageKey();
+        key.setTable("table");
+        key.setDatabase("database");
+
+        MessageValue value = new MessageValue();
+        value.setDatabase(key.getDatabase());
+        value.setTable(key.getTable());
+        value.setCommitId(123L);
+        value.setCommitted(true);
+        value.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        value.setData(Maps.newHashMap());
+        value.setOld(Maps.newHashMap());
+
+        dbStreamProcessor.process(key, value, "maxwell", 0, 0L);
+        verify(riverService, times(0)).process(value, "river1");
+    }
+
 }

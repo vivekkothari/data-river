@@ -4,7 +4,6 @@ import com.github.vivekkothari.river.bean.MessageValue;
 import com.github.vivekkothari.river.service.IRiverService;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Sets;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -13,6 +12,8 @@ import org.mockito.runners.MockitoJUnitRunner;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.*;
 
 /**
  * @author vivek.kothari on 27/07/16.
@@ -33,11 +34,40 @@ public class RiverServiceDateDecoratorTest {
         decorator.process(value, "river1");
 
         final Map<String, Object> data = value.getData();
-        Assert.assertNotNull(data);
-        Assert.assertEquals(true, data.get("created_at")
-                                      .getClass() == Date.class);
-        Assert.assertEquals(true, data.get("updated_at")
-                                      .getClass() == Date.class);
+        assertNotNull(data);
+        assertEquals(true, data.get("created_at")
+                               .getClass() == Date.class);
+        assertEquals(true, data.get("updated_at")
+                               .getClass() == Date.class);
+    }
+
+    @Test
+    public void process_data_invalid() throws Exception {
+        decorator = new RiverServiceDateDecorator(delegate, Sets.newHashSet("created_at"));
+        MessageValue value = new MessageValue();
+        value.setData(new HashMap<>(ImmutableMap.of("created_at", "2016-04-0100:00:00", "updated_at", new Date())));
+        decorator.process(value, "river1");
+
+        final Map<String, Object> data = value.getData();
+        assertNotNull(data);
+        assertEquals(true, data.get("created_at")
+                               .getClass() == String.class);
+        assertEquals(true, data.get("updated_at")
+                               .getClass() == Date.class);
+    }
+
+    @Test
+    public void process_data_null() throws Exception {
+        decorator = new RiverServiceDateDecorator(delegate, Sets.newHashSet("created_at"));
+        MessageValue value = new MessageValue();
+        value.setData(new HashMap<>(ImmutableMap.of("created_at", "null", "updated_at", new Date())));
+        decorator.process(value, "river1");
+
+        final Map<String, Object> data = value.getData();
+        assertNotNull(data);
+        assertNull(data.get("created_at"));
+        assertEquals(true, data.get("updated_at")
+                               .getClass() == Date.class);
     }
 
     @Test
@@ -49,11 +79,11 @@ public class RiverServiceDateDecoratorTest {
         decorator.process(value, "river1");
 
         final Map<String, Object> data = value.getOld();
-        Assert.assertNotNull(data);
-        Assert.assertEquals(true, data.get("created_at")
-                                      .getClass() == Date.class);
-        Assert.assertEquals(true, data.get("updated_at")
-                                      .getClass() == Date.class);
+        assertNotNull(data);
+        assertEquals(true, data.get("created_at")
+                               .getClass() == Date.class);
+        assertEquals(true, data.get("updated_at")
+                               .getClass() == Date.class);
     }
 
 }

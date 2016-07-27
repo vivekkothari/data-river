@@ -46,12 +46,7 @@ public class MessageValue {
 
         @Override
         public Timestamp deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-            try {
-                return new Timestamp(jsonParser.getLongValue() * 1000);
-            } catch (NumberFormatException e) {
-                log.warn("Unable to deserialize timestamp ", e);
-                return null;
-            }
+            return new Timestamp(jsonParser.getLongValue() * 1000);
         }
     }
 }
