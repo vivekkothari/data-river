@@ -12,11 +12,12 @@ Replicates data from mysql to any datastore of your choice (relies on maxwell)
 ```
 
 Imagine you have 2 tables in MySql, `Table1` and `Table2`. You would have to configure [maxwell](http://maxwells-daemon.io).
-Once maxwell is properly configured, lets say you want to persist this rows in the above tables in [Elastic-Search](https://www.elastic.co). We would create 2 rivers, `table1_river` and `table2_river`.
+Once maxwell is properly configured, lets say you want to persist changes in the above tables in [Elastic-Search](https://www.elastic.co). We would create 2 rivers, `table1_river` and `table2_river`.
 Then for each of these `riverType`, provide implementation of `IFilter`, `IEnricher` and `IBackFiller` and build a
 [`TransformerFactory`](https://github.com/vivekkothari/data-river/blob/master/data-river-core/src/main/java/com/github/vivekkothari/river/service/TransformerFactory.java)
 
 Incoming kafka message goes through following 3 steps:
+
 1. Filtering: [`IFilter`](https://github.com/vivekkothari/data-river/blob/master/data-river-core/src/main/java/com/github/vivekkothari/river/service/IFilter.java) governs whether
 the incoming message should be processed or not.
 2. Enrichment: [`IEnricher`](https://github.com/vivekkothari/data-river/blob/master/data-river-core/src/main/java/com/github/vivekkothari/river/service/IEnricher.java) provides a
