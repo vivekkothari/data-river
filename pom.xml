@@ -58,6 +58,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -89,6 +96,13 @@
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>com/github/vivekkothari/persister/ESRiverConfiguration.class</exclude>
+                            <exclude>com/github/vivekkothari/persister/ESBulkProcessor.class</exclude>
+                            <exclude>com/github/vivekkothari/river/config/RiverConfiguration.class</exclude>
+                        </excludes>
+                    </instrumentation>
                     <format>xml</format>
                     <maxmem>256m</maxmem>
                     <aggregate>true</aggregate>
