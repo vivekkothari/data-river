@@ -8,7 +8,7 @@ Replicates data from mysql to any datastore of your choice (relies on maxwell)
 <dependency>
     <groupId>com.github.vivekkothari</groupId>
     <artifactId>elastic-search-persister</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 

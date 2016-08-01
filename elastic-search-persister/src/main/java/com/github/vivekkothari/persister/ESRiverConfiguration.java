@@ -1,8 +1,8 @@
 package com.github.vivekkothari.persister;
 
-import com.codahale.metrics.health.HealthCheck;
 import com.datasift.dropwizard.kafka.serializer.JacksonDecoder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.vivekkothari.persister.health.ESHealthCheck;
 import com.github.vivekkothari.persister.impl.DailyIndexNameGenerator;
 import com.github.vivekkothari.river.bean.MessageKey;
 import com.github.vivekkothari.river.bean.MessageValue;
@@ -25,9 +25,6 @@ import io.dropwizard.validation.MaxSize;
 import io.dropwizard.validation.MinDuration;
 import io.dropwizard.validation.MinSize;
 import lombok.Data;
-import org.elasticsearch.action.ListenableActionFuture;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Range;
 
@@ -99,25 +96,7 @@ public class ESRiverConfiguration
         environment.lifecycle()
                    .manage(bulkProcessor);
         environment.healthChecks()
-                   .register("es-health", new HealthCheck() {
-
-                       @Override
-                       protected Result check() throws Exception {
-                           ListenableActionFuture<ClusterHealthResponse> execute = bulkProcessor.getClient()
-                                                                                                .admin()
-                                                                                                .cluster()
-                                                                                                .prepareHealth()
-                                                                                                .execute();
-                           ClusterHealthResponse healthResponse = execute.actionGet();
-                           ClusterHealthStatus status = healthResponse.getStatus();
-
-                           String clusterName = healthResponse.getClusterName();
-                           if (status.value() > ClusterHealthStatus.YELLOW.value()) {
-                               return Result.unhealthy("ES cluster " + clusterName + " is unhealthy.");
-                           }
-                           return Result.healthy("ES cluster " + clusterName + " is healthy.");
-                       }
-                   });
+                   .register("es-health", new ESHealthCheck(bulkProcessor));
         return new ElasticSearchPersister(bulkProcessor, indexNameGenerators);
     }
 }

@@ -7,7 +7,7 @@ Replicates data from mysql to any datastore of your choice (relies on maxwell)
 <dependency>
     <groupId>com.github.vivekkothari</groupId>
     <artifactId>data-river-core</artifactId>
-    <version>1.2</version>
+    <version>1.2.1</version>
 </dependency>
 ```
 

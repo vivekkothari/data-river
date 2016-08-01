@@ -40,16 +40,16 @@ public interface IEnricher {
     }
 
     /**
-     * Returns the {@code id} using which it needs to be indexed in ES
+     * Returns the {@code id} using which is the primary/unique key of the record.
      *
      * @param messageValue
      *         incoming messageValue
      *
      * @return by default returns the "id" field in the incoming message.
      */
-    default String recordId(final MessageValue messageValue) {
-        return String.valueOf(messageValue.getData()
-                                          .get("id"));
+    default <T> T recordId(final MessageValue messageValue) {
+        return (T) String.valueOf(messageValue.getData()
+                                              .get("id"));
     }
 
 }
