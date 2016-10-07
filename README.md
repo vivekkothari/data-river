@@ -2,7 +2,7 @@
 
 Replicates data from mysql to any datastore of your choice (relies on maxwell)
 
-### Maven Dependency
+### Maven Dependency 
 * Use the following maven dependency:
 ```
 <dependency>
