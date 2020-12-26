@@ -7,11 +7,11 @@ import com.github.vivekkothari.river.service.IEnricher;
  * @author vivek.kothari on 27/07/16.
  */
 public class NoopEnricher
-        implements IEnricher {
+    implements IEnricher {
 
-    @Override
-    public MessageValue enrich(final MessageValue messageValue) {
-        return messageValue;
-    }
+  @Override
+  public MessageValue enrich(final MessageValue messageValue) {
+    return messageValue;
+  }
 
 }

@@ -1,7 +1,17 @@
 package com.github.vivekkothari.river.service.impl;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.github.vivekkothari.river.bean.MessageValue;
-import com.github.vivekkothari.river.service.*;
+import com.github.vivekkothari.river.service.IBackFiller;
+import com.github.vivekkothari.river.service.IEnricher;
+import com.github.vivekkothari.river.service.IFilter;
+import com.github.vivekkothari.river.service.IPersister;
+import com.github.vivekkothari.river.service.TransformerFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,57 +20,54 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
-
 /**
  * @author vivek.kothari on 27/07/16.
  */
 @RunWith(MockitoJUnitRunner.class)
 public class RiverServiceImplTest {
 
-    @Mock
-    private IFilter filter;
+  @Mock
+  private IFilter filter;
 
-    private RiverServiceImpl riverService;
+  private RiverServiceImpl riverService;
 
-    @Mock
-    private IPersister persister;
+  @Mock
+  private IPersister persister;
 
-    @Mock
-    private IEnricher enricher;
+  @Mock
+  private IEnricher enricher;
 
-    @Before
-    public void before() {
-        TransformerFactory.builder()
-                          .filter("river1", filter)
-                          .enricher("river1", enricher)
-                          .backFiller("river1", Mockito.mock(IBackFiller.class))
-                          .build();
-    }
+  @Before
+  public void before() {
+    TransformerFactory.builder()
+        .filter("river1", filter)
+        .enricher("river1", enricher)
+        .backFiller("river1", Mockito.mock(IBackFiller.class))
+        .build();
+  }
 
-    @After
-    public void after() {
-        TransformerFactory.INSTANCE = null;
-    }
+  @After
+  public void after() {
+    TransformerFactory.INSTANCE = null;
+  }
 
-    @Test
-    public void process() throws Exception {
-        riverService = new RiverServiceImpl(persister);
-        when(filter.shouldProcess(any())).thenReturn(true);
-        final MessageValue messageValue = new MessageValue();
-        when(enricher.enrich(messageValue)).thenReturn(messageValue);
-        riverService.process(messageValue, "river1");
-        verify(persister, times(1)).persist(messageValue, "river1");
-        verify(enricher, times(1)).enrich(messageValue);
+  @Test
+  public void process() {
+    riverService = new RiverServiceImpl(persister);
+    when(filter.shouldProcess(any())).thenReturn(true);
+    final var messageValue = new MessageValue();
+    when(enricher.enrich(messageValue)).thenReturn(messageValue);
+    riverService.process(messageValue, "river1");
+    verify(persister, times(1)).persist(messageValue, "river1");
+    verify(enricher, times(1)).enrich(messageValue);
 
-        reset(enricher, filter, persister);
+    reset(enricher, filter, persister);
 
-        when(filter.shouldProcess(any())).thenReturn(false);
-        riverService.process(messageValue, "river1");
+    when(filter.shouldProcess(any())).thenReturn(false);
+    riverService.process(messageValue, "river1");
 
-        verify(persister, times(0)).persist(messageValue, "river1");
-        verify(enricher, times(0)).enrich(messageValue);
-    }
+    verify(persister, times(0)).persist(messageValue, "river1");
+    verify(enricher, times(0)).enrich(messageValue);
+  }
 
 }

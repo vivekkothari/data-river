@@ -9,12 +9,12 @@ import org.junit.Test;
  */
 public class NoopEnricherTest {
 
-    @Test
-    public void enrich() throws Exception {
-        NoopEnricher enricher = new NoopEnricher();
-        MessageValue value = new MessageValue();
-        final MessageValue enrich = enricher.enrich(value);
-        Assert.assertEquals(value, enrich);
-    }
+  @Test
+  public void enrich() {
+    var enricher = new NoopEnricher();
+    var value = new MessageValue();
+    final var enrich = enricher.enrich(value);
+    Assert.assertEquals(value, enrich);
+  }
 
 }

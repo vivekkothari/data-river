@@ -10,18 +10,18 @@ import org.junit.Test;
  */
 public class ESBulkProcessorTest {
 
-    @Test
-    public void test() throws Exception {
-        ESRiverConfiguration configuration = new ESRiverConfiguration();
-        configuration.setHosts(Lists.newArrayList("localhost"));
-        configuration.setClusterName("elasticsearch");
-        ESBulkProcessor processor = new ESBulkProcessor(configuration);
-        processor.start();
-        processor.get()
-                 .add(new IndexRequest("index", "type", "id").source(ImmutableMap.of("key", "value")));
-        processor.get()
-                 .flush();
-        processor.stop();
-    }
+  @Test
+  public void test() throws Exception {
+    var configuration = new ESRiverConfiguration();
+    configuration.setHosts(Lists.newArrayList("localhost"));
+    configuration.setClusterName("elasticsearch");
+    var processor = new ESBulkProcessor(configuration);
+    processor.start();
+    processor.get()
+        .add(new IndexRequest("index", "type", "id").source(ImmutableMap.of("key", "value")));
+    processor.get()
+        .flush();
+    processor.stop();
+  }
 
 }

@@ -7,5 +7,5 @@ import com.github.vivekkothari.river.bean.MessageValue;
  */
 public interface IPersister {
 
-    public void persist(final MessageValue messageValue, final String riverType);
+  void persist(final MessageValue messageValue, final String riverType);
 }

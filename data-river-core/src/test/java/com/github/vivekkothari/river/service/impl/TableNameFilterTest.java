@@ -9,20 +9,20 @@ import org.junit.Test;
  */
 public class TableNameFilterTest {
 
-    @Test(expected = NullPointerException.class)
-    public void shouldProcess_error() throws Exception {
-        TableNameFilter filter = new TableNameFilter(null);
-    }
+  @Test(expected = NullPointerException.class)
+  public void shouldProcess_error() {
+    var filter = new TableNameFilter(null);
+  }
 
-    @Test
-    public void shouldProcess() throws Exception {
-        TableNameFilter filter = new TableNameFilter("Table");
-        MessageValue messageValue = new MessageValue();
-        messageValue.setTable("Table");
-        Assert.assertEquals(true, filter.shouldProcess(messageValue));
+  @Test
+  public void shouldProcess() {
+    var filter = new TableNameFilter("Table");
+    var messageValue = new MessageValue();
+    messageValue.setTable("Table");
+    Assert.assertEquals(true, filter.shouldProcess(messageValue));
 
-        messageValue.setTable("InvalidTable");
-        Assert.assertEquals(false, filter.shouldProcess(messageValue));
-    }
+    messageValue.setTable("InvalidTable");
+    Assert.assertEquals(false, filter.shouldProcess(messageValue));
+  }
 
 }

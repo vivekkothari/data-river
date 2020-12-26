@@ -8,6 +8,6 @@ import com.github.vivekkothari.river.bean.MessageValue;
 @FunctionalInterface
 public interface IRiverService {
 
-    void process(final MessageValue messageValue, final String riverType);
+  void process(final MessageValue messageValue, final String riverType);
 
 }

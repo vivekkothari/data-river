@@ -10,8 +10,8 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MessageKey {
 
-    private String database;
+  private String database;
 
-    private String table;
+  private String table;
 
 }
