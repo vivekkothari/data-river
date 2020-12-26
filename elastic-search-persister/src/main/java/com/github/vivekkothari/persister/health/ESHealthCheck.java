@@ -2,7 +2,10 @@ package com.github.vivekkothari.persister.health;
 
 import com.codahale.metrics.health.HealthCheck;
 import com.github.vivekkothari.persister.ESBulkProcessor;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
+import lombok.SneakyThrows;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.cluster.health.ClusterHealthStatus;
 
 /**
  * @author vivek.kothari on 28/07/16.
@@ -16,17 +19,18 @@ public class ESHealthCheck
     this.bulkProcessor = bulkProcessor;
   }
 
+  @SneakyThrows
   @Override
   protected Result check() {
-    var execute = bulkProcessor.getClient()
-        .admin()
+    var status = bulkProcessor.getClient()
         .cluster()
-        .prepareHealth()
-        .execute();
-    var healthResponse = execute.actionGet();
-    var status = healthResponse.getStatus();
+        .health(new ClusterHealthRequest("*"), RequestOptions.DEFAULT)
+        .getStatus();
+    var clusterName = bulkProcessor.getClient()
+        .cluster()
+        .health(new ClusterHealthRequest("*"), RequestOptions.DEFAULT)
+        .getClusterName();
 
-    var clusterName = healthResponse.getClusterName();
     if (status.value() > ClusterHealthStatus.YELLOW.value()) {
       return Result.unhealthy("ES cluster " + clusterName + " is unhealthy.");
     }

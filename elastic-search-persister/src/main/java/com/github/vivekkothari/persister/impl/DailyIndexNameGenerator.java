@@ -9,8 +9,7 @@ import java.util.Date;
 /**
  * @author vivek.kothari on 26/07/16.
  */
-public class DailyIndexNameGenerator
-    implements IndexNameGenerator {
+public class DailyIndexNameGenerator implements IndexNameGenerator {
 
   @Override
   public String indexName(final MessageValue messageValue, final Date date) {

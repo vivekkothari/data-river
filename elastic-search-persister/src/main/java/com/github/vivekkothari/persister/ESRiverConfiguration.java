@@ -38,8 +38,7 @@ import org.hibernate.validator.constraints.Range;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class ESRiverConfiguration
-    extends RiverConfiguration {
+public class ESRiverConfiguration extends RiverConfiguration {
 
   @NotEmpty
   private String clusterName;

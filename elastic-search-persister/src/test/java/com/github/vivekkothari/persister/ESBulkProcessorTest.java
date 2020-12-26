@@ -17,10 +17,8 @@ public class ESBulkProcessorTest {
     configuration.setClusterName("elasticsearch");
     var processor = new ESBulkProcessor(configuration);
     processor.start();
-    processor.get()
-        .add(new IndexRequest("index", "type", "id").source(ImmutableMap.of("key", "value")));
-    processor.get()
-        .flush();
+    processor.get().add(new IndexRequest("index").source(ImmutableMap.of("key", "value")));
+    processor.get().flush();
     processor.stop();
   }
 

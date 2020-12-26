@@ -1,17 +1,17 @@
 package com.github.vivekkothari.persister;
 
 import io.dropwizard.lifecycle.Managed;
-import java.net.InetSocketAddress;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpHost;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.settings.ImmutableSettings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
@@ -25,7 +25,7 @@ public class ESBulkProcessor
 
   private final ESRiverConfiguration esConfig;
   private BulkProcessor bulkProcessor;
-  private TransportClient client;
+  private RestHighLevelClient client;
 
   public ESBulkProcessor(final ESRiverConfiguration esConfig) {
     this.esConfig = esConfig;
@@ -34,19 +34,18 @@ public class ESBulkProcessor
   @Override
   public void start() {
     log.info("Starting Elasticsearch Client Connection...");
-    final var settings = ImmutableSettings.builder()
-        .put("cluster.name", esConfig.getClusterName())
-        .build();
 
-    client = new TransportClient(settings);
-    for (final var host : esConfig.getHosts()) {
-      client.addTransportAddress(
-          new InetSocketTransportAddress(new InetSocketAddress(host.trim(), 9300)));
-      log.info("Added Elasticsearch Node : {}", host);
-    }
+    var httpHosts = esConfig.getHosts().stream()
+        .map(host -> new HttpHost(host, 9200, "http"))
+        .toArray(HttpHost[]::new);
+
+    client = new RestHighLevelClient(RestClient.builder(httpHosts));
+
     log.info("Started Elasticsearch Client Connection...");
     log.info("Starting bulk processor..");
-    bulkProcessor = BulkProcessor.builder(client, new ESBulkListener())
+    bulkProcessor = BulkProcessor.builder(
+        (request, bulkListener) -> client.bulkAsync(request, RequestOptions.DEFAULT, bulkListener),
+        new ESBulkListener())
         .setBulkActions(esConfig.getBulkActions())
         .setBulkSize(new ByteSizeValue(esConfig.getBulkSize()
             .toBytes(), ByteSizeUnit.BYTES))
@@ -60,11 +59,11 @@ public class ESBulkProcessor
   public void stop() throws Exception {
     log.info("Stopping bulk processor..");
     client.close();
-    bulkProcessor.awaitClose(10, TimeUnit.MINUTES);
+    bulkProcessor.close();
     log.info("Stopped bulk processor..");
   }
 
-  public TransportClient getClient() {
+  public RestHighLevelClient getClient() {
     return Objects.requireNonNull(client);
   }
 
@@ -85,7 +84,7 @@ public class ESBulkProcessor
     public void afterBulk(final long executionId, final BulkRequest request,
         final BulkResponse response) {
       log.info("finished bulk operation {} which took {} and # items processed are {}", executionId,
-          response.getTookInMillis(), response.getItems().length);
+          response.getIngestTookInMillis(), response.getItems().length);
       if (response.hasFailures()) {
         log.error("Error in operation {}, message: {}", executionId,
             response.buildFailureMessage());

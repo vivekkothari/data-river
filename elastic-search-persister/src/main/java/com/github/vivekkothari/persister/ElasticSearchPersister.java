@@ -30,12 +30,10 @@ public class ElasticSearchPersister
     final String id = enricher.recordId(messageValue);
     final var indexName = indexNameGenerators.get(riverType)
         .indexName(messageValue, enricher.getRecordCreationDate(messageValue));
-    final var type = messageValue.getTable()
-        .toLowerCase();
     switch (messageValue.getType()) {
       case insert, update -> bulkProcessor.get()
-          .add(new IndexRequest(indexName, type, id).source(messageValue.getData()));
-      case delete -> bulkProcessor.get().add(new DeleteRequest(indexName, type, id));
+          .add(new IndexRequest(indexName).source(messageValue.getData()));
+      case delete -> bulkProcessor.get().add(new DeleteRequest(indexName, id));
     }
   }
 

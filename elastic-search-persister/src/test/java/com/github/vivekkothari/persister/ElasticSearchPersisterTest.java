@@ -73,8 +73,7 @@ public class ElasticSearchPersisterTest {
     value.setTable("table");
     value.setType(MessageValue.Type.insert);
     persister.persist(value, "river1");
-    final var indexRequest = new IndexRequest("index", "table", "1234")
-        .source(value.getData());
+    final var indexRequest = new IndexRequest("index").source(value.getData());
     verify(bulkProcessor, times(1)).add(indexRequestEq(indexRequest));
   }
 
@@ -90,8 +89,7 @@ public class ElasticSearchPersisterTest {
     value.setTable("table");
     value.setType(MessageValue.Type.update);
     persister.persist(value, "river1");
-    final var indexRequest = new IndexRequest("index", "table", "1234")
-        .source(value.getData());
+    final var indexRequest = new IndexRequest("index").source(value.getData());
     verify(bulkProcessor, times(1)).add(indexRequestEq(indexRequest));
   }
 
@@ -107,7 +105,7 @@ public class ElasticSearchPersisterTest {
     value.setTable("table");
     value.setType(MessageValue.Type.delete);
     persister.persist(value, "river1");
-    final var deleteRequest = new DeleteRequest("index", "table", "1234");
+    final var deleteRequest = new DeleteRequest("index", "1234");
 
     verify(bulkProcessor, times(1)).add(deleteRequestEq(deleteRequest));
   }
